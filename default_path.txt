@@ -1,0 +1,3 @@
+# enter default path below
+# empty lines, and lines starting with a '#' will be ignored 
+# in case of multiple paths, first one will be selected as default path
