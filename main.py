@@ -2,17 +2,37 @@ import os
 from datetime import datetime
 from pdf_processor import scan_folder_and_process_pdfs
 
+def get_default_path():
+    """Reads the default path from 'default_path.txt', ignoring empty lines and comments."""
+    try:
+        with open('default_path.txt', 'r') as file:
+            for line in file:
+                line = line.strip()
+                if line and not line.startswith('#'):
+                    if os.path.isdir(line):
+                        return line
+                    else:
+                        print(f"Warning: The path in 'default_path.txt' does not exist: {line}")
+                        return None
+        print("Error: No valid paths found in 'default_path.txt'.")
+        return None
+    except FileNotFoundError:
+        print("Error: 'default_path.txt' not found.")
+        return None
+
 def main():
-    # Get the current working directory
-    current_path = os.getcwd()
-    
-    # Print the current directory and ask for confirmation or a new path
-    print(f"Current working directory: {current_path}")
-    user_input = input("Provide folder path to process PDFs, or leave empty to use current working directory: ").strip()
+    # Get the default path from the file
+    default_path = get_default_path()
+    if not default_path:
+        default_path = os.getcwd()  # Fallback to current working directory if the file is missing or path is invalid
+
+    # Prompt user with the default path
+    print(f"Default folder path: {default_path}")
+    user_input = input("Press Enter to use the default path, or provide a different folder path: ").strip()
 
     # Determine the folder path based on user input
     if user_input == '':
-        folder_path = current_path
+        folder_path = default_path
     else:
         # Strip quotation marks if they are present
         folder_path = user_input.strip('"').strip("'")
